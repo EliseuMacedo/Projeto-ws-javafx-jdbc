@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -13,11 +13,15 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/MainView.fxml"));
-			Parent parent = loader.load();
-			Scene mainScene = new Scene(parent);
-			primaryStage.setScene(mainScene);
-			primaryStage.setTitle("Sample JavaFX application");
-			primaryStage.show();
+			ScrollPane scrollPane = loader.load(); //carregar a view
+			
+			scrollPane.setFitToHeight(true); //macete para ajustar a largura do form	
+			scrollPane.setFitToWidth(true);
+			
+			Scene mainScene = new Scene(scrollPane); // instanciar cena principal
+			primaryStage.setScene(mainScene); // setar cena como principal
+			primaryStage.setTitle("Sample JavaFX application"); //titulo aplicação javafx modelo
+			primaryStage.show(); //exibir tela
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

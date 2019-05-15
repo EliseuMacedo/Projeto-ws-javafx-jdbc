@@ -15,6 +15,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import model.services.DepartmentServices;
 
 public class MainViewController implements Initializable {
 
@@ -32,7 +33,7 @@ public class MainViewController implements Initializable {
 
 	@FXML
 	public void onMenuItemDepartamentoAction() {
-		loadView("/gui/DepartmentList.fxml");
+		loadView2("/gui/DepartmentList.fxml");
 	}
 
 	@FXML
@@ -67,6 +68,37 @@ public class MainViewController implements Initializable {
 			// adicionar no mainVbox o mainMenu e depois os filhos no newVbox
 			mainVbox.getChildren().add(mainMenu);
 			mainVbox.getChildren().addAll(newVbox.getChildren());
+
+		} catch (IOException e) {
+			Alerts.showAlert("IO Exception", "Erro carregando a página", e.getMessage(), AlertType.ERROR);
+		}
+	}
+	
+	private synchronized void loadView2(String caminhoCompleto) {
+
+		try {
+			
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(caminhoCompleto));
+			VBox newVbox = loader.load();
+
+			// peguei a referencia para a Scene
+			Scene mainScene = Main.getMainScene();
+
+			VBox mainVbox = (VBox) ((ScrollPane) mainScene.getRoot()).getContent(); // Esse método pega o primeiro
+																					// elemento da minha view.
+
+			// pegar referencia para o menu
+			Node mainMenu = mainVbox.getChildren().get(0);
+			mainVbox.getChildren().clear(); // limpar todos os filhos de mainVbox
+
+			// adicionar no mainVbox o mainMenu e depois os filhos no newVbox
+			mainVbox.getChildren().add(mainMenu);
+			mainVbox.getChildren().addAll(newVbox.getChildren());
+			
+			DepartmentListController controller = loader.getController();
+			//esse objeto loader eu posso tanto acessar a view quanto acessar o controller
+			controller.setDepartmentService(new DepartmentServices());
+			controller.updateTableView();
 
 		} catch (IOException e) {
 			Alerts.showAlert("IO Exception", "Erro carregando a página", e.getMessage(), AlertType.ERROR);
